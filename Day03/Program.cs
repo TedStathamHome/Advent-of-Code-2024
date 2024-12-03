@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Day03
 {
@@ -9,22 +10,52 @@ namespace Day03
 		static void Main(string[] args)
 		{
 			Console.WriteLine("Advent of Code 2024: Day 3");
-			var puzzleInputRaw = File.ReadLines($"./PuzzleInput-{((args.Length > 0 && args[0].Trim().ToLower() == "test") ? "test" : "full")}.txt").ToList();
+			var puzzleInputRaw = File.ReadAllText($"./PuzzleInput-{((args.Length > 0 && args[0].Trim().ToLower() == "test") ? "test" : "full")}.txt");
 
-			PartA();
-			PartB();
+			PartA(puzzleInputRaw);
+			PartB(puzzleInputRaw);
 		}
 
-		private static void PartA()
+		private static void PartA(string puzzleInputRaw)
 		{
 			Console.WriteLine("\r\n**********");
 			Console.WriteLine("* Part A");
+
+			var regexPattern = @"mul\(\d{1,3},\d{1,3}\)";
+			var regexOptions = RegexOptions.Multiline;
+
+			var sumOfMuls = 0;
+			foreach (Match match in Regex.Matches(puzzleInputRaw, regexPattern, regexOptions))
+			{
+				Console.WriteLine($"** '{match.Value}' found at index {match.Index:N0}");
+				string[] values = match.Value.Replace("mul(", "").Replace(")", "").Split(',').ToArray();
+
+				sumOfMuls += (int.Parse(values[0]) * int.Parse(values[1]));
+			}
+
+			Console.WriteLine($"*** Sum of mul() values multiplied is {sumOfMuls:N0}");
 		}
 
-		private static void PartB()
+		private static void PartB(string puzzleInputRaw)
 		{
 			Console.WriteLine("\r\n**********");
 			Console.WriteLine("* Part B");
+
+			var regexPatternMul = @"mul\(\d{1,3},\d{1,3}\)";
+			var regexPatternDoDont = @"do\(\)|don't\(\)";
+			var regexOptions = RegexOptions.Multiline;
+			var doDontMatches = Regex.Matches(puzzleInputRaw, regexPatternDoDont, regexOptions);
+
+			var sumOfMuls = 0;
+			foreach (Match match in Regex.Matches(puzzleInputRaw, regexPatternMul, regexOptions))
+			{
+				Console.WriteLine($"** '{match.Value}' found at index {match.Index:N0}");
+				string[] values = match.Value.Replace("mul(", "").Replace(")", "").Split(',').ToArray();
+
+				sumOfMuls += (int.Parse(values[0]) * int.Parse(values[1]));
+			}
+
+			Console.WriteLine($"*** Sum of mul() values multiplied is {sumOfMuls:N0}");
 		}
 	}
 }
