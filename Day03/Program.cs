@@ -45,17 +45,40 @@ namespace Day03
 			var regexPatternDoDont = @"do\(\)|don't\(\)";
 			var regexOptions = RegexOptions.Multiline;
 			var doDontMatches = Regex.Matches(puzzleInputRaw, regexPatternDoDont, regexOptions);
+			var isMulActive = true;
+            var sumOfMuls = 0;
+            var currentDoDont = 0;
+            var doDontType = doDontMatches[currentDoDont].Value;
+            var doDontIndex = doDontMatches[currentDoDont].Index;
 
-			var sumOfMuls = 0;
 			foreach (Match match in Regex.Matches(puzzleInputRaw, regexPatternMul, regexOptions))
 			{
-				Console.WriteLine($"** '{match.Value}' found at index {match.Index:N0}");
-				string[] values = match.Value.Replace("mul(", "").Replace(")", "").Split(',').ToArray();
+				if (match.Index > doDontIndex)
+				{
+					isMulActive = (doDontType == "do()");
+					currentDoDont++;
+					
+					if (currentDoDont > (doDontMatches.Count - 1))
+					{
+						doDontIndex = puzzleInputRaw.Length;
+					}
+					else
+					{
+						doDontType = doDontMatches[currentDoDont].Value;
+                        doDontIndex = doDontMatches[currentDoDont].Index;
+                    }
+				}
 
-				sumOfMuls += (int.Parse(values[0]) * int.Parse(values[1]));
-			}
+				Console.WriteLine($"** '{match.Value}' found at index {match.Index:N0} - {(isMulActive ? "active" : "inactive")}");
 
-			Console.WriteLine($"*** Sum of mul() values multiplied is {sumOfMuls:N0}");
+				if (isMulActive)
+				{
+                    string[] values = match.Value.Replace("mul(", "").Replace(")", "").Split(',').ToArray();
+                    sumOfMuls += (int.Parse(values[0]) * int.Parse(values[1]));
+                }
+            }
+
+			Console.WriteLine($"*** Sum of active mul() values multiplied is {sumOfMuls:N0}");
 		}
 	}
 }
