@@ -5,12 +5,6 @@ using System.Linq;
 
 namespace Day05
 {
-	internal class PageDetail
-	{
-		public string PageNo;
-		public List<string> EarlierPages;
-	}
-	
 	internal class Program
 	{
 		static void Main(string[] args)
@@ -20,27 +14,6 @@ namespace Day05
 
 			var pageOrderingRules = puzzleInputRaw.Where(x => x.Contains('|')).ToList();
 			var safetyManualUpdates = puzzleInputRaw.Where(x => !string.IsNullOrWhiteSpace(x) && !x.Contains('|')).ToList();
-
-			//List<PageDetail> pageDetails = new List<PageDetail>();
-			
-			//foreach (var rule in pageOrderingRules)
-			//{
-			//	var ruleDetails = rule.Split('|');
-			//	var detailIndex = pageDetails.FindIndex(x => x.PageNo == ruleDetails[1]);
-				
-			//	if (detailIndex < 0)    // we couldn't find it
-			//	{
-			//		pageDetails.Add(new PageDetail
-			//		{
-			//			PageNo = ruleDetails[1],
-			//			EarlierPages = { ruleDetails[0] }
-			//		});
-			//	}
-			//	else 
-			//	{
-			//		pageDetails[detailIndex].EarlierPages.Add(ruleDetails[0]);
-			//	}
-			//}
 
 			PartA(pageOrderingRules, safetyManualUpdates);
 			PartB();
